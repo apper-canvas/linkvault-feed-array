@@ -41,7 +41,7 @@ const BookmarkCard = ({ bookmark, onEdit, onDelete, onPin, onOpen, className }) 
     
     setIsPinning(true);
     try {
-      await onPin(bookmark.id);
+await onPin(bookmark.Id);
     } catch (error) {
       console.error('Error toggling pin:', error);
     } finally {

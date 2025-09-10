@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import BookmarkGrid from '@/components/organisms/BookmarkGrid';
-import { bookmarkService } from '@/services/api/bookmarkService';
+import React, { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import { bookmarkService } from "@/services/api/bookmarkService";
+import BookmarkGrid from "@/components/organisms/BookmarkGrid";
 
 const RecentBookmarks = () => {
   const { onEdit, onDelete, onAddBookmark, searchQuery } = useOutletContext();
@@ -72,10 +72,21 @@ const filtered = bookmarks.filter(bookmark =>
       bookmark.description?.toLowerCase().includes(searchTerm) ||
       bookmark.tags?.some(tag => tag.toLowerCase().includes(searchTerm))
     );
-    
-    setFilteredBookmarks(filtered);
+setFilteredBookmarks(filtered);
   };
   
+  const handlePin = async (bookmarkId) => {
+    try {
+      const success = await bookmarkService.togglePin(bookmarkId);
+      if (success) {
+        // Refresh bookmarks to show updated pin status
+        await loadRecentBookmarks();
+      }
+    } catch (error) {
+      console.error('Error toggling pin:', error);
+    }
+  };
+
   return (
     <div className="h-full">
       <div className="p-6 border-b border-gray-200 bg-white">
@@ -101,7 +112,8 @@ const filtered = bookmarks.filter(bookmark =>
         onRetry={loadRecentBookmarks}
         onEdit={onEdit}
         onDelete={onDelete}
-        onAddBookmark={onAddBookmark}
+onAddBookmark={onAddBookmark}
+        onPin={handlePin}
         emptyTitle={searchQuery ? "No recent bookmarks match your search" : "No recent bookmarks"}
         emptyMessage={searchQuery ? "Try adjusting your search terms or add some bookmarks" : "Bookmarks you've added in the last 7 days will appear here"}
       />
