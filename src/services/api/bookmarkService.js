@@ -39,11 +39,10 @@ class BookmarkService {
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "tags_c"}},
           {"field": {"Name": "favicon_c"}},
-          {"field": {"Name": "date_added_c"}},
-{"field": {"Name": "date_modified_c"}},
+{"field": {"Name": "date_added_c"}},
+          {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "pinned_c"}},
-          {"field": {"Name": "folder_id_c"}},
-          {"field": {"Name": "is_pinned_c"}}
+          {"field": {"Name": "folder_id_c"}}
         ],
         orderBy: [{"fieldName": "date_added_c", "sorttype": "DESC"}],
         pagingInfo: {"limit": 100, "offset": 0}

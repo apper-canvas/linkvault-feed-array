@@ -65,6 +65,18 @@ bookmark.title?.toLowerCase().includes(searchTerm) ||
     );
     
     setFilteredBookmarks(filtered);
+};
+  
+  const handlePin = async (bookmarkId) => {
+    try {
+      const success = await bookmarkService.togglePin(bookmarkId);
+      if (success) {
+        // Refresh bookmarks to show updated pin status
+        await loadBookmarks();
+      }
+    } catch (error) {
+      console.error('Error toggling pin:', error);
+    }
   };
   
   return (
@@ -93,6 +105,7 @@ bookmark.title?.toLowerCase().includes(searchTerm) ||
         onEdit={onEdit}
         onDelete={onDelete}
         onAddBookmark={onAddBookmark}
+        onPin={handlePin}
         emptyTitle={searchQuery ? "No bookmarks match your search" : "No bookmarks yet"}
         emptyMessage={searchQuery ? "Try adjusting your search terms or browse all bookmarks" : "Start building your bookmark collection by adding your first link"}
       />
