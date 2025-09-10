@@ -110,11 +110,18 @@ const navigationItems = [
             </h3>
             <div className="space-y-1">
               {folders.slice(0, 5).map((folder) => (
-                <NavItem
+<NavItem
                   key={folder.Id}
                   to={`/folder/${folder.Id}`}
-                  icon="Folder"
-                  label={folder.name}
+                  icon={folder.isShared ? "FolderOpen" : "Folder"}
+                  label={
+                    <div className="flex items-center gap-2">
+                      <span>{folder.name}</span>
+                      {folder.isShared && (
+                        <ApperIcon name="Share2" className="w-3 h-3 text-blue-500" />
+                      )}
+                    </div>
+                  }
                   count={folder.bookmarkCount}
                 />
               ))}

@@ -1,30 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import ApperIcon from '@/components/ApperIcon';
-import Badge from '@/components/atoms/Badge';
-import Button from '@/components/atoms/Button';
-import Loading from '@/components/ui/Loading';
-import Error from '@/components/ui/Error';
-import Empty from '@/components/ui/Empty';
-import { folderService } from '@/services/api/folderService';
-
+import React, { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import { motion } from "framer-motion";
+import { folderService } from "@/services/api/folderService";
+import { folderSharingService } from "@/services/api/folderSharingService";
+import FolderSharingModal from "@/components/organisms/FolderSharingModal";
+import ApperIcon from "@/components/ApperIcon";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
 const FoldersPage = () => {
-  const { onAddBookmark } = useOutletContext();
+const { onAddBookmark, onSharingUpdate } = useOutletContext();
   const [folders, setFolders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const [sharingFolder, setSharingFolder] = useState(null);
+  const [isSharingModalOpen, setIsSharingModalOpen] = useState(false);
   useEffect(() => {
     loadFolders();
   }, []);
   
-  const loadFolders = async () => {
+const loadFolders = async () => {
     try {
       setLoading(true);
       setError(null);
       const data = await folderService.getAll();
-      setFolders(data);
+      // Transform folder data to include sharing information
+      const foldersWithSharing = data.map(folder => ({
+        ...folder,
+        isShared: folder.shared_c || false,
+        sharedWith: folder.shared_with_c ? folder.shared_with_c.split(',').map(email => email.trim()).filter(email => email) : [],
+        sharePermissions: folder.share_permissions_c || 'view'
+      }));
+      setFolders(foldersWithSharing);
     } catch (err) {
       setError('Failed to load folders');
       console.error('Error loading folders:', err);
@@ -32,34 +41,68 @@ const FoldersPage = () => {
       setLoading(false);
     }
   };
+
+  const handleShareFolder = (folder) => {
+    setSharingFolder(folder);
+    setIsSharingModalOpen(true);
+  };
+
+  const handleSharingUpdate = async () => {
+    await loadFolders();
+    onSharingUpdate?.();
+  };
   
-  const FolderCard = ({ folder }) => (
+const FolderCard = ({ folder }) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)" }}
-      className="bg-white rounded-xl p-6 shadow-md border border-gray-100 cursor-pointer transition-all duration-200 group hover:border-primary/20"
+      className="bg-white rounded-xl p-6 shadow-md border border-gray-100 transition-all duration-200 group hover:border-primary/20 relative"
     >
       <div className="flex items-start gap-4">
         <div 
           className="w-12 h-12 rounded-lg flex items-center justify-center"
-style={{ backgroundColor: `${folder.color}20`, color: folder.color }}
+          style={{ backgroundColor: `${folder.color}20`, color: folder.color }}
         >
-          <ApperIcon name="Folder" className="w-6 h-6" />
+          <ApperIcon name={folder.isShared ? "FolderOpen" : "Folder"} className="w-6 h-6" />
         </div>
         
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
-{folder.name}
-          </h3>
-          <p className="text-sm text-gray-500 mt-1">
-{folder.bookmarkCount} {folder.bookmarkCount === 1 ? 'bookmark' : 'bookmarks'}
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
+              {folder.name}
+            </h3>
+            {folder.isShared && (
+              <ApperIcon name="Share2" className="w-4 h-4 text-blue-500" title="Shared folder" />
+            )}
+          </div>
+          <p className="text-sm text-gray-500">
+            {folder.bookmarkCount} {folder.bookmarkCount === 1 ? 'bookmark' : 'bookmarks'}
           </p>
+          {folder.isShared && folder.sharedWith.length > 0 && (
+            <p className="text-xs text-blue-600 mt-1">
+              Shared with {folder.sharedWith.length} {folder.sharedWith.length === 1 ? 'person' : 'people'}
+            </p>
+          )}
         </div>
         
-        <Badge variant="default" size="sm">
-          {folder.bookmarkCount}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant="default" size="sm">
+            {folder.bookmarkCount}
+          </Badge>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleShareFolder(folder);
+            }}
+            className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+            title="Share folder"
+          >
+            <ApperIcon name="Share2" className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
     </motion.div>
   );
@@ -96,7 +139,7 @@ style={{ backgroundColor: `${folder.color}20`, color: folder.color }}
           icon="Folder"
         />
       ) : (
-        <div className="p-6">
+<div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {folders.map((folder, index) => (
               <motion.div
@@ -111,6 +154,17 @@ style={{ backgroundColor: `${folder.color}20`, color: folder.color }}
           </div>
         </div>
       )}
+      
+      {/* Folder Sharing Modal */}
+      <FolderSharingModal
+        isOpen={isSharingModalOpen}
+        onClose={() => {
+          setIsSharingModalOpen(false);
+          setSharingFolder(null);
+        }}
+        folder={sharingFolder}
+        onSharingUpdate={handleSharingUpdate}
+/>
     </div>
   );
 };

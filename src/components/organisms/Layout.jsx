@@ -3,12 +3,12 @@ import { Outlet } from "react-router-dom";
 import { folderService } from "@/services/api/folderService";
 import { tagService } from "@/services/api/tagService";
 import { bookmarkService } from "@/services/api/bookmarkService";
+import { folderSharingService } from "@/services/api/folderSharingService";
 import { toast } from "react-toastify";
 import Header from "@/components/organisms/Header";
 import MobileSidebar from "@/components/organisms/MobileSidebar";
 import Sidebar from "@/components/organisms/Sidebar";
 import BookmarkModal from "@/components/organisms/BookmarkModal";
-
 const Layout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBookmarkModalOpen, setIsBookmarkModalOpen] = useState(false);
@@ -20,9 +20,9 @@ const [bookmarkCounts, setBookmarkCounts] = useState({
     recent: 0
   });
   const [pinnedBookmarks, setPinnedBookmarks] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [sharedFolders, setSharedFolders] = useState([]);
   useEffect(() => {
     loadSidebarData();
   }, []);
@@ -161,12 +161,13 @@ bookmarkCounts={bookmarkCounts}
           />
           
           <main className="flex-1 overflow-y-auto">
-            <Outlet context={{ 
+<Outlet context={{ 
               onEdit: handleEditBookmark, 
-onDelete: handleDeleteBookmark,
+              onDelete: handleDeleteBookmark,
               onPin: handlePinBookmark,
               onAddBookmark: handleAddBookmark,
-              searchQuery 
+              searchQuery,
+              onSharingUpdate: loadSidebarData
             }} />
           </main>
         </div>

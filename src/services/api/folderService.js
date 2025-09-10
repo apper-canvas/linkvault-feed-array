@@ -28,14 +28,17 @@ class FolderService {
       this.initializeClient();
     }
 
-    try {
+try {
       const params = {
         fields: [
           {"field": {"Name": "Name"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "color_c"}},
           {"field": {"Name": "parent_id_c"}},
-          {"field": {"Name": "bookmark_count_c"}}
+          {"field": {"Name": "bookmark_count_c"}},
+          {"field": {"Name": "shared_c"}},
+          {"field": {"Name": "shared_with_c"}},
+          {"field": {"Name": "share_permissions_c"}}
         ],
         orderBy: [{"fieldName": "name_c", "sorttype": "ASC"}],
         pagingInfo: {"limit": 100, "offset": 0}
@@ -75,12 +78,15 @@ class FolderService {
 
     try {
       const params = {
-        fields: [
+fields: [
           {"field": {"Name": "Name"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "color_c"}},
           {"field": {"Name": "parent_id_c"}},
-          {"field": {"Name": "bookmark_count_c"}}
+          {"field": {"Name": "bookmark_count_c"}},
+          {"field": {"Name": "shared_c"}},
+          {"field": {"Name": "shared_with_c"}},
+          {"field": {"Name": "share_permissions_c"}}
         ]
       };
 
@@ -113,12 +119,15 @@ class FolderService {
 
     try {
       const params = {
-        records: [{
+records: [{
           Name: folderData.name || folderData.Name,
           name_c: folderData.name,
           color_c: folderData.color,
           parent_id_c: folderData.parentId ? parseInt(folderData.parentId) : null,
-          bookmark_count_c: 0
+          bookmark_count_c: 0,
+          shared_c: false,
+          shared_with_c: '',
+          share_permissions_c: 'view'
         }]
       };
 
@@ -174,9 +183,12 @@ class FolderService {
           Id: parseInt(id),
           Name: folderData.name || folderData.Name,
           name_c: folderData.name,
-          color_c: folderData.color,
+color_c: folderData.color,
           parent_id_c: folderData.parentId ? parseInt(folderData.parentId) : null,
-          bookmark_count_c: folderData.bookmarkCount
+          bookmark_count_c: folderData.bookmarkCount,
+          shared_c: folderData.isShared !== undefined ? folderData.isShared : false,
+          shared_with_c: folderData.sharedWith || '',
+          share_permissions_c: folderData.sharePermissions || 'view'
         }]
       };
 
