@@ -43,9 +43,9 @@ const params = {
           {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "pinned_c"}},
           {"field": {"Name": "folder_id_c"}},
-          {"field": {"Name": "archived_c"}}
+{"field": {"Name": "archive_c"}}
         ],
-        where: [{"FieldName": "archived_c", "Operator": "EqualTo", "Values": [false]}],
+where: [{"FieldName": "archive_c", "Operator": "EqualTo", "Values": [false]}],
         orderBy: [{"fieldName": "date_added_c", "sorttype": "DESC"}],
         pagingInfo: {"limit": 100, "offset": 0}
       };
@@ -73,7 +73,7 @@ const params = {
         dateModified: bookmark.date_modified_c,
 folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
         isPinned: bookmark.pinned_c || false,
-        isArchived: bookmark.archived_c || false
+isArchived: bookmark.archive_c || false
       }));
     } catch (error) {
       console.error("Error fetching bookmarks:", error?.response?.data?.message || error);
@@ -101,7 +101,7 @@ fields: [
           {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "folder_id_c"}},
           {"field": {"Name": "pinned_c"}},
-          {"field": {"Name": "archived_c"}}
+{"field": {"Name": "archive_c"}}
         ]
       };
 
@@ -122,7 +122,7 @@ fields: [
 dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
         isPinned: bookmark.pinned_c || false,
-        isArchived: bookmark.archived_c || false,
+isArchived: bookmark.archive_c || false,
         folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c
       };
     } catch (error) {
@@ -151,10 +151,10 @@ fields: [
           {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "folder_id_c"}},
           {"field": {"Name": "pinned_c"}},
-          {"field": {"Name": "archived_c"}}
+{"field": {"Name": "archive_c"}}
         ],
         where: [
-          {"FieldName": "archived_c", "Operator": "EqualTo", "Values": [false]},
+{"FieldName": "archive_c", "Operator": "EqualTo", "Values": [false]},
           {"FieldName": "tags_c", "Operator": "Contains", "Values": [tagName]}
         ],
         orderBy: [{"fieldName": "date_added_c", "sorttype": "DESC"}],
@@ -175,7 +175,7 @@ fields: [
 tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
         isPinned: bookmark.pinned_c || false,
-        isArchived: bookmark.archived_c || false,
+isArchived: bookmark.archive_c || false,
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
         folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c
@@ -205,7 +205,7 @@ fields: [
           {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "folder_id_c"}},
-          {"field": {"Name": "archived_c"}},
+{"field": {"Name": "archive_c"}},
           {"field": {"Name": "pinned_c"}}
         ],
         where: [{"FieldName": "folder_id_c", "Operator": "ExactMatch", "Values": [parseInt(folderId)]}],
@@ -226,7 +226,7 @@ fields: [
 description: bookmark.description_c,
         tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
         isPinned: bookmark.pinned_c || false,
-        isArchived: bookmark.archived_c || false,
+isArchived: bookmark.archive_c || false,
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
@@ -259,7 +259,7 @@ description: bookmark.description_c,
           date_modified_c: now,
 folder_id_c: bookmarkData.folderId ? parseInt(bookmarkData.folderId) : null,
           pinned_c: bookmarkData.isPinned || false,
-          archived_c: bookmarkData.isArchived || false
+archive_c: bookmarkData.isArchived || false
         }]
       };
 
@@ -294,7 +294,7 @@ folder_id_c: bookmarkData.folderId ? parseInt(bookmarkData.folderId) : null,
 favicon: created.favicon_c,
             dateAdded: created.date_added_c,
             isPinned: created.pinned_c || false,
-            isArchived: created.archived_c || false,
+isArchived: created.archive_c || false,
             dateModified: created.date_modified_c,
             folderId: created.folder_id_c?.Id || created.folder_id_c
           };
@@ -328,7 +328,7 @@ favicon: created.favicon_c,
 date_modified_c: new Date().toISOString(),
           folder_id_c: bookmarkData.folderId ? parseInt(bookmarkData.folderId) : null,
           pinned_c: bookmarkData.isPinned !== undefined ? bookmarkData.isPinned : false,
-          archived_c: bookmarkData.isArchived !== undefined ? bookmarkData.isArchived : false
+archive_c: bookmarkData.isArchived !== undefined ? bookmarkData.isArchived : false
         }]
       };
 
@@ -364,7 +364,7 @@ date_modified_c: new Date().toISOString(),
 dateAdded: updated.date_added_c,
             dateModified: updated.date_modified_c,
             isPinned: updated.pinned_c || false,
-            isArchived: updated.archived_c || false,
+isArchived: updated.archive_c || false,
             folderId: updated.folder_id_c?.Id || updated.folder_id_c
           };
         }
@@ -549,9 +549,9 @@ async toggleArchive(id) {
           {"field": {"Name": "date_modified_c"}},
 {"field": {"Name": "pinned_c"}},
           {"field": {"Name": "folder_id_c"}},
-          {"field": {"Name": "archived_c"}}
+{"field": {"Name": "archive_c"}}
         ],
-        where: [{"FieldName": "archived_c", "Operator": "EqualTo", "Values": [true]}],
+where: [{"FieldName": "archive_c", "Operator": "EqualTo", "Values": [true]}],
         orderBy: [{"fieldName": "date_modified_c", "sorttype": "DESC"}],
         pagingInfo: {"limit": 100, "offset": 0}
       };
@@ -578,7 +578,7 @@ async toggleArchive(id) {
         dateModified: bookmark.date_modified_c,
 folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
         isPinned: bookmark.pinned_c || false,
-        isArchived: bookmark.archived_c || false,
+isArchived: bookmark.archive_c || false,
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c)
       }));
     } catch (error) {
@@ -606,11 +606,11 @@ folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
           {"field": {"Name": "date_modified_c"}},
 {"field": {"Name": "folder_id_c"}},
           {"field": {"Name": "pinned_c"}},
-          {"field": {"Name": "archived_c"}}
+{"field": {"Name": "archive_c"}}
         ],
         where: [
           {"FieldName": "pinned_c", "Operator": "EqualTo", "Values": [true]},
-          {"FieldName": "archived_c", "Operator": "EqualTo", "Values": [false]}
+{"FieldName": "archive_c", "Operator": "EqualTo", "Values": [false]}
         ],
         orderBy: [{"fieldName": "date_added_c", "sorttype": "DESC"}],
         pagingInfo: {"limit": 100, "offset": 0}
@@ -632,7 +632,7 @@ folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
 folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
-        isArchived: bookmark.archived_c || false,
+isArchived: bookmark.archive_c || false,
         isPinned: true
       }));
     } catch (error) {
