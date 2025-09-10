@@ -31,15 +31,15 @@ class BookmarkService {
     }
 
     try {
-      const params = {
+const params = {
         fields: [
-{"field": {"Name": "Name"}},
+          {"field": {"Name": "Name"}},
           {"field": {"Name": "url_c"}},
           {"field": {"Name": "title_c"}},
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "tags_c"}},
-{"field": {"Name": "favicon_c"}},
-{"field": {"Name": "date_added_c"}},
+          {"field": {"Name": "favicon_c"}},
+          {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "pinned_c"}},
           {"field": {"Name": "folder_id_c"}},
@@ -72,7 +72,7 @@ class BookmarkService {
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
 folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
-isPinned: bookmark.pinned_c || false,
+        isPinned: bookmark.pinned_c || false,
         isArchived: bookmark.archived_c || false
       }));
     } catch (error) {
@@ -90,8 +90,8 @@ isPinned: bookmark.pinned_c || false,
 
     try {
       const params = {
-        fields: [
-{"field": {"Name": "Name"}},
+fields: [
+          {"field": {"Name": "Name"}},
           {"field": {"Name": "url_c"}},
           {"field": {"Name": "title_c"}},
           {"field": {"Name": "description_c"}},
@@ -99,8 +99,8 @@ isPinned: bookmark.pinned_c || false,
           {"field": {"Name": "favicon_c"}},
           {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "date_modified_c"}},
-{"field": {"Name": "folder_id_c"}},
-{"field": {"Name": "pinned_c"}},
+          {"field": {"Name": "folder_id_c"}},
+          {"field": {"Name": "pinned_c"}},
           {"field": {"Name": "archived_c"}}
         ]
       };
@@ -120,8 +120,8 @@ isPinned: bookmark.pinned_c || false,
         tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
 dateAdded: bookmark.date_added_c,
-dateModified: bookmark.date_modified_c,
-isPinned: bookmark.pinned_c || false,
+        dateModified: bookmark.date_modified_c,
+        isPinned: bookmark.pinned_c || false,
         isArchived: bookmark.archived_c || false,
         folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c
       };
@@ -140,19 +140,19 @@ isPinned: bookmark.pinned_c || false,
 
     try {
       const params = {
-        fields: [
+fields: [
           {"field": {"Name": "Name"}},
-{"field": {"Name": "url_c"}},
+          {"field": {"Name": "url_c"}},
           {"field": {"Name": "title_c"}},
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "tags_c"}},
           {"field": {"Name": "favicon_c"}},
           {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "date_modified_c"}},
-{"field": {"Name": "folder_id_c"}},
-{"field": {"Name": "pinned_c"}},
+          {"field": {"Name": "folder_id_c"}},
+          {"field": {"Name": "pinned_c"}},
           {"field": {"Name": "archived_c"}}
-],
+        ],
         where: [
           {"FieldName": "archived_c", "Operator": "EqualTo", "Values": [false]},
           {"FieldName": "tags_c", "Operator": "Contains", "Values": [tagName]}
@@ -174,7 +174,7 @@ isPinned: bookmark.pinned_c || false,
         description: bookmark.description_c,
 tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
-isPinned: bookmark.pinned_c || false,
+        isPinned: bookmark.pinned_c || false,
         isArchived: bookmark.archived_c || false,
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
@@ -195,18 +195,18 @@ isPinned: bookmark.pinned_c || false,
 
     try {
       const params = {
-        fields: [
-{"field": {"Name": "Name"}},
+fields: [
+          {"field": {"Name": "Name"}},
           {"field": {"Name": "url_c"}},
           {"field": {"Name": "title_c"}},
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "tags_c"}},
           {"field": {"Name": "favicon_c"}},
           {"field": {"Name": "date_added_c"}},
-{"field": {"Name": "date_modified_c"}},
+          {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "folder_id_c"}},
           {"field": {"Name": "archived_c"}},
-{"field": {"Name": "pinned_c"}}
+          {"field": {"Name": "pinned_c"}}
         ],
         where: [{"FieldName": "folder_id_c", "Operator": "ExactMatch", "Values": [parseInt(folderId)]}],
         orderBy: [{"fieldName": "date_added_c", "sorttype": "DESC"}],
@@ -225,7 +225,7 @@ isPinned: bookmark.pinned_c || false,
         title: bookmark.title_c || bookmark.Name,
 description: bookmark.description_c,
         tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
-isPinned: bookmark.pinned_c || false,
+        isPinned: bookmark.pinned_c || false,
         isArchived: bookmark.archived_c || false,
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
         dateAdded: bookmark.date_added_c,
@@ -258,7 +258,7 @@ isPinned: bookmark.pinned_c || false,
           date_added_c: now,
           date_modified_c: now,
 folder_id_c: bookmarkData.folderId ? parseInt(bookmarkData.folderId) : null,
-pinned_c: bookmarkData.isPinned || false,
+          pinned_c: bookmarkData.isPinned || false,
           archived_c: bookmarkData.isArchived || false
         }]
       };
@@ -293,7 +293,7 @@ pinned_c: bookmarkData.isPinned || false,
             tags: created.tags_c ? created.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
 favicon: created.favicon_c,
             dateAdded: created.date_added_c,
-isPinned: created.pinned_c || false,
+            isPinned: created.pinned_c || false,
             isArchived: created.archived_c || false,
             dateModified: created.date_modified_c,
             folderId: created.folder_id_c?.Id || created.folder_id_c
@@ -326,8 +326,8 @@ isPinned: created.pinned_c || false,
           tags_c: Array.isArray(bookmarkData.tags) ? bookmarkData.tags.join(',') : (bookmarkData.tags || ''),
           favicon_c: this.getFaviconUrl(bookmarkData.url),
 date_modified_c: new Date().toISOString(),
-folder_id_c: bookmarkData.folderId ? parseInt(bookmarkData.folderId) : null,
-pinned_c: bookmarkData.isPinned !== undefined ? bookmarkData.isPinned : false,
+          folder_id_c: bookmarkData.folderId ? parseInt(bookmarkData.folderId) : null,
+          pinned_c: bookmarkData.isPinned !== undefined ? bookmarkData.isPinned : false,
           archived_c: bookmarkData.isArchived !== undefined ? bookmarkData.isArchived : false
         }]
       };
@@ -362,8 +362,8 @@ pinned_c: bookmarkData.isPinned !== undefined ? bookmarkData.isPinned : false,
             tags: updated.tags_c ? updated.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
             favicon: updated.favicon_c,
 dateAdded: updated.date_added_c,
-dateModified: updated.date_modified_c,
-isPinned: updated.pinned_c || false,
+            dateModified: updated.date_modified_c,
+            isPinned: updated.pinned_c || false,
             isArchived: updated.archived_c || false,
             folderId: updated.folder_id_c?.Id || updated.folder_id_c
           };
@@ -547,7 +547,7 @@ async toggleArchive(id) {
           {"field": {"Name": "favicon_c"}},
           {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "date_modified_c"}},
-          {"field": {"Name": "pinned_c"}},
+{"field": {"Name": "pinned_c"}},
           {"field": {"Name": "folder_id_c"}},
           {"field": {"Name": "archived_c"}}
         ],
@@ -576,7 +576,7 @@ async toggleArchive(id) {
         tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()) : [],
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
-        folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
+folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
         isPinned: bookmark.pinned_c || false,
         isArchived: bookmark.archived_c || false,
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c)
