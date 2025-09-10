@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import ApperIcon from '@/components/ApperIcon';
-import Badge from '@/components/atoms/Badge';
-import Button from '@/components/atoms/Button';
-import { formatDistanceToNow } from 'date-fns';
-import { cn } from '@/utils/cn';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { formatDistanceToNow } from "date-fns";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
+import { cn } from "@/utils/cn";
 
-const BookmarkCard = ({ bookmark, onEdit, onDelete, onOpen, className }) => {
-const [imageError, setImageError] = useState(false);
+const BookmarkCard = ({ bookmark, onEdit, onDelete, onPin, onOpen, className }) => {
+  const [imageError, setImageError] = useState(false);
+  const [isPinning, setIsPinning] = useState(false);
   
   const handleImageError = () => {
     setImageError(true);
@@ -22,7 +23,7 @@ const [imageError, setImageError] = useState(false);
     }
   };
   
-const getDomainName = (url) => {
+  const getDomainName = (url) => {
     try {
       return new URL(url).hostname;
     } catch {
@@ -32,9 +33,22 @@ const getDomainName = (url) => {
   
   const handleCardClick = (e) => {
     if (e.target.closest('button')) return;
-    onOpen(bookmark.url);
+    onOpen?.(bookmark.url);
   };
-  
+
+  const handlePin = async () => {
+    if (!onPin || isPinning) return;
+    
+    setIsPinning(true);
+    try {
+      await onPin(bookmark.id);
+    } catch (error) {
+      console.error('Error toggling pin:', error);
+    } finally {
+      setIsPinning(false);
+}
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -100,7 +114,24 @@ const getDomainName = (url) => {
 {formatDistanceToNow(new Date(bookmark.dateAdded), { addSuffix: true })}
         </span>
         
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePin();
+            }}
+            disabled={isPinning}
+            className="h-8 w-8 p-0 hover:bg-gray-100"
+            title={bookmark.isPinned ? "Unpin bookmark" : "Pin bookmark"}
+          >
+            <ApperIcon 
+              name={bookmark.isPinned ? "Star" : "Star"} 
+              size={14}
+              className={bookmark.isPinned ? "fill-yellow-400 text-yellow-400" : "text-gray-400"}
+            />
+          </Button>
           <Button
             variant="ghost"
             size="sm"

@@ -4,14 +4,18 @@ import ApperIcon from '@/components/ApperIcon';
 import Badge from '@/components/atoms/Badge';
 import { cn } from '@/utils/cn';
 
-const Sidebar = ({ folders, tags, bookmarkCounts, className }) => {
+const Sidebar = ({ folders, tags, bookmarkCounts, pinnedBookmarks, className }) => {
   const location = useLocation();
   
-  const navigationItems = [
+const navigationItems = [
     { path: '/', label: 'All Bookmarks', icon: 'Bookmark', count: bookmarkCounts.total },
     { path: '/recent', label: 'Recently Added', icon: 'Clock', count: bookmarkCounts.recent },
     { path: '/folders', label: 'Folders', icon: 'Folder', count: folders?.length || 0 },
   ];
+
+  const handleBookmarkClick = (url) => {
+    window.open(url, '_blank');
+  };
   
   const NavItem = ({ to, icon, label, count, className: itemClassName }) => (
     <NavLink
@@ -47,6 +51,46 @@ const Sidebar = ({ folders, tags, bookmarkCounts, className }) => {
           </div>
         </div>
         
+{/* Pinned Bookmarks Section */}
+        {pinnedBookmarks && pinnedBookmarks.length > 0 && (
+          <div className="mb-6">
+            <div className="px-4 mb-3">
+              <div className="flex items-center gap-2">
+                <ApperIcon name="Star" size={16} className="text-yellow-500 fill-yellow-400" />
+                <h3 className="text-sm font-semibold text-gray-900">Pinned</h3>
+              </div>
+            </div>
+            <div className="space-y-1">
+              {pinnedBookmarks.map((bookmark) => (
+                <button
+                  key={bookmark.id}
+                  onClick={() => handleBookmarkClick(bookmark.url)}
+                  className="w-full px-4 py-2 flex items-center gap-3 text-left hover:bg-gray-100 transition-colors duration-150 group"
+                  title={bookmark.title || bookmark.name}
+                >
+                  <div className="flex-shrink-0 w-4 h-4 flex items-center justify-center">
+                    {bookmark.favicon ? (
+                      <img 
+                        src={bookmark.favicon} 
+                        alt="" 
+                        className="w-4 h-4 rounded-sm"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <ApperIcon name="Globe" size={14} className="text-gray-400" />
+                    )}
+                  </div>
+                  <span className="flex-1 text-sm text-gray-700 truncate group-hover:text-gray-900">
+                    {bookmark.title || bookmark.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <nav className="space-y-1">
           {navigationItems.map((item) => (
             <NavItem

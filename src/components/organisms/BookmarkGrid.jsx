@@ -12,7 +12,8 @@ const BookmarkGrid = ({
   onRetry, 
   onEdit, 
   onDelete, 
-  onAddBookmark,
+onAddBookmark,
+  onPin,
   emptyTitle = "No bookmarks found",
   emptyMessage = "Start building your bookmark collection by adding your first link"
 }) => {
@@ -52,7 +53,8 @@ const BookmarkGrid = ({
               bookmark={bookmark}
               onEdit={onEdit}
               onDelete={onDelete}
-              onOpen={handleOpen}
+onOpen={handleOpen}
+              onPin={onPin}
             />
           </motion.div>
         ))}

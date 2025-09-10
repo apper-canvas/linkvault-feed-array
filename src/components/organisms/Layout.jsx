@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import Sidebar from "@/components/organisms/Sidebar";
-import MobileSidebar from "@/components/organisms/MobileSidebar";
-import Header from "@/components/organisms/Header";
-import BookmarkModal from "@/components/organisms/BookmarkModal";
 import { folderService } from "@/services/api/folderService";
 import { tagService } from "@/services/api/tagService";
 import { bookmarkService } from "@/services/api/bookmarkService";
 import { toast } from "react-toastify";
+import Header from "@/components/organisms/Header";
+import MobileSidebar from "@/components/organisms/MobileSidebar";
+import Sidebar from "@/components/organisms/Sidebar";
+import BookmarkModal from "@/components/organisms/BookmarkModal";
 
 const Layout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -19,6 +19,7 @@ const [bookmarkCounts, setBookmarkCounts] = useState({
     total: 0,
     recent: 0
   });
+  const [pinnedBookmarks, setPinnedBookmarks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
@@ -28,10 +29,11 @@ const [bookmarkCounts, setBookmarkCounts] = useState({
   
   const loadSidebarData = async () => {
     try {
-const [foldersData, tagsData, allBookmarks] = await Promise.all([
+const [foldersData, tagsData, allBookmarks, pinnedBookmarksData] = await Promise.all([
         folderService.getAll(),
         tagService.getAll(),
-        bookmarkService.getAll()
+        bookmarkService.getAll(),
+        bookmarkService.getPinned()
       ]);
       
       setFolders(foldersData);
@@ -43,10 +45,11 @@ const [foldersData, tagsData, allBookmarks] = await Promise.all([
 new Date(bookmark.dateAdded) > sevenDaysAgo
       );
       
-      setBookmarkCounts({
+setBookmarkCounts({
         total: allBookmarks.length,
         recent: recentBookmarks.length
       });
+      setPinnedBookmarks(pinnedBookmarksData);
     } catch (error) {
       console.error('Error loading sidebar data:', error);
     }
@@ -101,12 +104,28 @@ loadSidebarData();
         console.error('Error deleting bookmark:', error);
       }
     }
+}
+  };
+
+  const handlePinBookmark = async (bookmarkId) => {
+    try {
+      const success = await bookmarkService.togglePin(bookmarkId);
+      if (success) {
+        loadSidebarData();
+        
+        // Trigger a custom event to refresh bookmark lists
+        window.dispatchEvent(new window.CustomEvent('bookmarkUpdated'));
+      }
+    } catch (error) {
+      console.error('Error toggling pin:', error);
+    }
   };
   
   const handleSearch = (query) => {
-setSearchQuery(query);
-    // Trigger a custom event with search query
-    window.dispatchEvent(new window.CustomEvent('searchBookmarks', { 
+    setSearchQuery(query);
+    
+    // Dispatch search event for other components
+    window.dispatchEvent(new window.CustomEvent('searchQueryChanged', {
       detail: { query } 
     }));
   };
@@ -119,7 +138,8 @@ setSearchQuery(query);
           <Sidebar 
             folders={folders}
             tags={tags}
-            bookmarkCounts={bookmarkCounts}
+bookmarkCounts={bookmarkCounts}
+            pinnedBookmarks={pinnedBookmarks}
             className="h-full"
           />
         </div>
@@ -130,9 +150,9 @@ setSearchQuery(query);
           onClose={() => setIsMobileMenuOpen(false)}
           folders={folders}
           tags={tags}
-          bookmarkCounts={bookmarkCounts}
+bookmarkCounts={bookmarkCounts}
+          pinnedBookmarks={pinnedBookmarks}
         />
-        
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header
@@ -144,7 +164,8 @@ setSearchQuery(query);
           <main className="flex-1 overflow-y-auto">
             <Outlet context={{ 
               onEdit: handleEditBookmark, 
-              onDelete: handleDeleteBookmark,
+onDelete: handleDeleteBookmark,
+              onPin: handlePinBookmark,
               onAddBookmark: handleAddBookmark,
               searchQuery 
             }} />
