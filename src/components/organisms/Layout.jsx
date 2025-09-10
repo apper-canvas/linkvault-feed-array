@@ -90,12 +90,12 @@ loadSidebarData();
     }
   };
   
-  const handleDeleteBookmark = async (bookmarkId) => {
+const handleDeleteBookmark = async (bookmarkId) => {
     if (window.confirm('Are you sure you want to delete this bookmark?')) {
       try {
         await bookmarkService.delete(bookmarkId);
         toast.success('Bookmark deleted successfully!');
-loadSidebarData();
+        loadSidebarData();
         
         // Trigger a custom event to refresh bookmark lists
         window.dispatchEvent(new window.CustomEvent('bookmarkUpdated'));
@@ -104,7 +104,6 @@ loadSidebarData();
         console.error('Error deleting bookmark:', error);
       }
     }
-}
   };
 
   const handlePinBookmark = async (bookmarkId) => {
