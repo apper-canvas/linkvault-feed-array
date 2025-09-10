@@ -1,0 +1,122 @@
+[
+  {
+    "name": "react",
+    "color": "#61dafb",
+    "usageCount": 1
+  },
+  {
+    "name": "javascript",
+    "color": "#f7df1e",
+    "usageCount": 1
+  },
+  {
+    "name": "development",
+    "color": "#2563eb",
+    "usageCount": 4
+  },
+  {
+    "name": "design",
+    "color": "#7c3aed",
+    "usageCount": 4
+  },
+  {
+    "name": "css",
+    "color": "#1572b6",
+    "usageCount": 1
+  },
+  {
+    "name": "tailwind",
+    "color": "#06b6d4",
+    "usageCount": 1
+  },
+  {
+    "name": "frontend",
+    "color": "#10b981",
+    "usageCount": 1
+  },
+  {
+    "name": "ui",
+    "color": "#8b5cf6",
+    "usageCount": 1
+  },
+  {
+    "name": "documentation",
+    "color": "#64748b",
+    "usageCount": 1
+  },
+  {
+    "name": "git",
+    "color": "#f05032",
+    "usageCount": 1
+  },
+  {
+    "name": "github",
+    "color": "#181717",
+    "usageCount": 1
+  },
+  {
+    "name": "collaboration",
+    "color": "#0ea5e9",
+    "usageCount": 2
+  },
+  {
+    "name": "inspiration",
+    "color": "#ec4899",
+    "usageCount": 1
+  },
+  {
+    "name": "portfolio",
+    "color": "#f59e0b",
+    "usageCount": 2
+  },
+  {
+    "name": "creative",
+    "color": "#ef4444",
+    "usageCount": 2
+  },
+  {
+    "name": "programming",
+    "color": "#3b82f6",
+    "usageCount": 1
+  },
+  {
+    "name": "qa",
+    "color": "#6b7280",
+    "usageCount": 1
+  },
+  {
+    "name": "help",
+    "color": "#84cc16",
+    "usageCount": 1
+  },
+  {
+    "name": "adobe",
+    "color": "#ff0000",
+    "usageCount": 1
+  },
+  {
+    "name": "writing",
+    "color": "#374151",
+    "usageCount": 1
+  },
+  {
+    "name": "articles",
+    "color": "#6b7280",
+    "usageCount": 1
+  },
+  {
+    "name": "blog",
+    "color": "#9333ea",
+    "usageCount": 1
+  },
+  {
+    "name": "publishing",
+    "color": "#059669",
+    "usageCount": 1
+  },
+  {
+    "name": "prototyping",
+    "color": "#f97316",
+    "usageCount": 1
+  }
+]
