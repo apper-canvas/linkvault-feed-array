@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import Modal from '@/components/atoms/Modal';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Label from '@/components/atoms/Label';
-import TagInput from '@/components/molecules/TagInput';
-import ApperIcon from '@/components/ApperIcon';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import TagInput from "@/components/molecules/TagInput";
+import Modal from "@/components/atoms/Modal";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
+import Label from "@/components/atoms/Label";
 
 const BookmarkModal = ({ 
   isOpen, 
@@ -13,24 +13,30 @@ const BookmarkModal = ({
   onSave, 
   bookmark, 
   availableTags = [],
-  isLoading = false 
+  folders = [],
+  isLoading = false
 }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     url: '',
     title: '',
     description: '',
     tags: [],
     folderId: ''
   });
+  const [showCreateFolder, setShowCreateFolder] = useState(false);
+  const [newFolderData, setNewFolderData] = useState({
+    name: '',
+    color: '#2563eb'
+  });
   const [errors, setErrors] = useState({});
   const [isFetchingTitle, setIsFetchingTitle] = useState(false);
   
   const isEditing = Boolean(bookmark);
   
-  useEffect(() => {
+useEffect(() => {
     if (bookmark) {
       setFormData({
-url: bookmark.url || '',
+        url: bookmark.url || '',
         title: bookmark.title || '',
         description: bookmark.description || '',
         tags: bookmark.tags || [],
@@ -46,6 +52,8 @@ url: bookmark.url || '',
       });
     }
     setErrors({});
+    setShowCreateFolder(false);
+    setNewFolderData({ name: '', color: '#2563eb' });
   }, [bookmark, isOpen]);
   
   const validateForm = () => {
@@ -111,18 +119,39 @@ setFormData(prev => ({
     }
   };
   
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) {
       return;
     }
     
+    let finalFolderId = formData.folderId;
+    
+    // If creating a new folder, create it first
+    if (showCreateFolder && newFolderData.name.trim()) {
+      try {
+        const { folderService } = await import('@/services/api/folderService');
+        const createdFolder = await folderService.create({
+          name: newFolderData.name.trim(),
+          color: newFolderData.color
+        });
+        if (createdFolder) {
+          finalFolderId = createdFolder.Id;
+          toast.success('Folder created successfully');
+        }
+      } catch (error) {
+        toast.error('Failed to create folder');
+        return;
+      }
+    }
+
     const bookmarkData = {
       ...formData,
       url: formData.url.trim(),
       title: formData.title.trim(),
-      description: formData.description.trim()
+      description: formData.description.trim(),
+      folderId: finalFolderId
     };
     
     if (isEditing) {
@@ -130,6 +159,32 @@ setFormData(prev => ({
     }
     
     onSave(bookmarkData);
+  };
+
+  const handleCreateFolder = async () => {
+    if (!newFolderData.name.trim()) {
+      toast.error('Folder name is required');
+      return;
+    }
+
+    try {
+      const { folderService } = await import('@/services/api/folderService');
+      const createdFolder = await folderService.create({
+        name: newFolderData.name.trim(),
+        color: newFolderData.color
+      });
+      
+      if (createdFolder) {
+        setFormData(prev => ({ ...prev, folderId: createdFolder.Id }));
+        setShowCreateFolder(false);
+        setNewFolderData({ name: '', color: '#2563eb' });
+        toast.success('Folder created and selected');
+        // Trigger parent to refresh folder list if needed
+        if (window.refreshFolders) window.refreshFolders();
+      }
+    } catch (error) {
+toast.error('Failed to create folder');
+    }
   };
   
   return (
@@ -205,6 +260,105 @@ setFormData(prev => ({
             onTagsChange={(tags) => setFormData(prev => ({ ...prev, tags }))}
             availableTags={availableTags}
           />
+        </div>
+{/* Folder Selection */}
+        <div className="space-y-2">
+          <Label>Folder (Optional)</Label>
+          <div className="space-y-2">
+            <select
+              value={formData.folderId}
+              onChange={(e) => setFormData(prev => ({ ...prev, folderId: e.target.value }))}
+              className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+            >
+              <option value="">No folder</option>
+              {folders.map((folder) => (
+                <option key={folder.Id} value={folder.Id}>
+                  {folder.name || folder.Name}
+                </option>
+              ))}
+            </select>
+            
+            {!showCreateFolder && (
+              <button
+                type="button"
+                onClick={() => setShowCreateFolder(true)}
+                className="w-full px-3 py-2 text-sm text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
+              >
+                <ApperIcon name="Plus" className="w-4 h-4" />
+                Create New Folder
+              </button>
+            )}
+            
+            {showCreateFolder && (
+              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-gray-900">Create New Folder</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCreateFolder(false);
+                      setNewFolderData({ name: '', color: '#2563eb' });
+                    }}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <ApperIcon name="X" className="w-4 h-4" />
+                  </button>
+                </div>
+                
+                <div>
+                  <Label required>Folder Name</Label>
+                  <Input
+                    type="text"
+                    value={newFolderData.name}
+                    onChange={(e) => setNewFolderData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter folder name"
+                    maxLength={50}
+                  />
+                </div>
+                
+                <div>
+                  <Label>Folder Color</Label>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="color"
+                      value={newFolderData.color}
+                      onChange={(e) => setNewFolderData(prev => ({ ...prev, color: e.target.value }))}
+                      className="w-10 h-8 rounded border border-gray-300 cursor-pointer"
+                    />
+                    <Input
+                      type="text"
+                      value={newFolderData.color}
+                      onChange={(e) => setNewFolderData(prev => ({ ...prev, color: e.target.value }))}
+                      className="flex-1 font-mono text-sm"
+                      placeholder="#2563eb"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    onClick={handleCreateFolder}
+                    size="sm"
+                    className="flex-1"
+                  >
+                    Create Folder
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => {
+                      setShowCreateFolder(false);
+                      setNewFolderData({ name: '', color: '#2563eb' });
+                    }}
+                    size="sm"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         
         <div className="flex gap-3 pt-4">

@@ -160,8 +160,9 @@ setSearchQuery(query);
           setEditingBookmark(null);
         }}
         onSave={handleSaveBookmark}
-        bookmark={editingBookmark}
+bookmark={editingBookmark}
         availableTags={tags}
+        folders={folders}
         isLoading={isLoading}
       />
     </div>
