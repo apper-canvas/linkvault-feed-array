@@ -45,7 +45,7 @@ const RecentBookmarks = () => {
       const now = new Date();
       const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
       
-      const recentBookmarks = allBookmarks
+const recentBookmarks = allBookmarks
         .filter(bookmark => new Date(bookmark.dateAdded) > sevenDaysAgo)
         .sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
       
@@ -66,9 +66,9 @@ const RecentBookmarks = () => {
     }
     
     const searchTerm = query.toLowerCase();
-    const filtered = bookmarks.filter(bookmark => 
-      bookmark.title.toLowerCase().includes(searchTerm) ||
-      bookmark.url.toLowerCase().includes(searchTerm) ||
+const filtered = bookmarks.filter(bookmark => 
+      bookmark.title?.toLowerCase().includes(searchTerm) ||
+      bookmark.url?.toLowerCase().includes(searchTerm) ||
       bookmark.description?.toLowerCase().includes(searchTerm) ||
       bookmark.tags?.some(tag => tag.toLowerCase().includes(searchTerm))
     );

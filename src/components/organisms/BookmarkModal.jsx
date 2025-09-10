@@ -30,7 +30,7 @@ const BookmarkModal = ({
   useEffect(() => {
     if (bookmark) {
       setFormData({
-        url: bookmark.url || '',
+url: bookmark.url || '',
         title: bookmark.title || '',
         description: bookmark.description || '',
         tags: bookmark.tags || [],
@@ -77,7 +77,7 @@ const BookmarkModal = ({
       const domain = new URL(url).hostname;
       const title = `Bookmark from ${domain}`;
       
-      setFormData(prev => ({
+setFormData(prev => ({
         ...prev,
         title: title
       }));

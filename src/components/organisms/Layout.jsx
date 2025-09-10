@@ -15,7 +15,7 @@ const Layout = () => {
   const [editingBookmark, setEditingBookmark] = useState(null);
   const [folders, setFolders] = useState([]);
   const [tags, setTags] = useState([]);
-  const [bookmarkCounts, setBookmarkCounts] = useState({
+const [bookmarkCounts, setBookmarkCounts] = useState({
     total: 0,
     recent: 0
   });
@@ -28,7 +28,7 @@ const Layout = () => {
   
   const loadSidebarData = async () => {
     try {
-      const [foldersData, tagsData, allBookmarks] = await Promise.all([
+const [foldersData, tagsData, allBookmarks] = await Promise.all([
         folderService.getAll(),
         tagService.getAll(),
         bookmarkService.getAll()
@@ -40,7 +40,7 @@ const Layout = () => {
       const now = new Date();
       const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
       const recentBookmarks = allBookmarks.filter(bookmark => 
-        new Date(bookmark.dateAdded) > sevenDaysAgo
+new Date(bookmark.dateAdded) > sevenDaysAgo
       );
       
       setBookmarkCounts({

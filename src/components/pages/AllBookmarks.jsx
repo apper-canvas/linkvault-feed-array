@@ -58,8 +58,8 @@ const AllBookmarks = () => {
     
     const searchTerm = query.toLowerCase();
     const filtered = bookmarks.filter(bookmark => 
-      bookmark.title.toLowerCase().includes(searchTerm) ||
-      bookmark.url.toLowerCase().includes(searchTerm) ||
+bookmark.title?.toLowerCase().includes(searchTerm) ||
+      bookmark.url?.toLowerCase().includes(searchTerm) ||
       bookmark.description?.toLowerCase().includes(searchTerm) ||
       bookmark.tags?.some(tag => tag.toLowerCase().includes(searchTerm))
     );

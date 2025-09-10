@@ -43,17 +43,17 @@ const FoldersPage = () => {
       <div className="flex items-start gap-4">
         <div 
           className="w-12 h-12 rounded-lg flex items-center justify-center"
-          style={{ backgroundColor: `${folder.color}20`, color: folder.color }}
+style={{ backgroundColor: `${folder.color}20`, color: folder.color }}
         >
           <ApperIcon name="Folder" className="w-6 h-6" />
         </div>
         
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
-            {folder.name}
+{folder.name}
           </h3>
           <p className="text-sm text-gray-500 mt-1">
-            {folder.bookmarkCount} {folder.bookmarkCount === 1 ? 'bookmark' : 'bookmarks'}
+{folder.bookmarkCount} {folder.bookmarkCount === 1 ? 'bookmark' : 'bookmarks'}
           </p>
         </div>
         
