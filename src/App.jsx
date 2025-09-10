@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
+import ArchivedBookmarks from '@/components/pages/ArchivedBookmarks';
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -118,8 +119,9 @@ function AppContent() {
         <Route path="/prompt-password/:appId/:emailAddress/:provider" element={<PromptPassword />} />
         <Route path="/reset-password/:appId/:fields" element={<ResetPassword />} />
         <Route path="/" element={<Layout />}>
-          <Route index element={<AllBookmarks />} />
+<Route index element={<AllBookmarks />} />
           <Route path="recent" element={<RecentBookmarks />} />
+          <Route path="archive" element={<ArchivedBookmarks />} />
 <Route path="folders" element={<FoldersPage />} />
           <Route path="shared/folder/:shareId" element={<SharedFolderPage />} />
         </Route>

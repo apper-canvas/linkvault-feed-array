@@ -10,6 +10,7 @@ const Sidebar = ({ folders, tags, bookmarkCounts, pinnedBookmarks, className }) 
 const navigationItems = [
     { path: '/', label: 'All Bookmarks', icon: 'Bookmark', count: bookmarkCounts.total },
     { path: '/recent', label: 'Recently Added', icon: 'Clock', count: bookmarkCounts.recent },
+    { path: '/archive', label: 'Archive', icon: 'Archive', count: bookmarkCounts.archived },
     { path: '/folders', label: 'Folders', icon: 'Folder', count: folders?.length || 0 },
   ];
 

@@ -4,7 +4,7 @@ import BookmarkGrid from '@/components/organisms/BookmarkGrid';
 import { bookmarkService } from '@/services/api/bookmarkService';
 
 const AllBookmarks = () => {
-  const { onEdit, onDelete, onAddBookmark, searchQuery } = useOutletContext();
+const { onEdit, onDelete, onArchive, onAddBookmark, searchQuery } = useOutletContext();
   const [bookmarks, setBookmarks] = useState([]);
   const [filteredBookmarks, setFilteredBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -103,9 +103,10 @@ bookmark.title?.toLowerCase().includes(searchTerm) ||
         error={error}
         onRetry={loadBookmarks}
         onEdit={onEdit}
-        onDelete={onDelete}
+onDelete={onDelete}
         onAddBookmark={onAddBookmark}
         onPin={handlePin}
+        onArchive={onArchive}
         emptyTitle={searchQuery ? "No bookmarks match your search" : "No bookmarks yet"}
         emptyMessage={searchQuery ? "Try adjusting your search terms or browse all bookmarks" : "Start building your bookmark collection by adding your first link"}
       />

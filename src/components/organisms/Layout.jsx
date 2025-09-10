@@ -17,7 +17,8 @@ const Layout = () => {
   const [tags, setTags] = useState([]);
 const [bookmarkCounts, setBookmarkCounts] = useState({
     total: 0,
-    recent: 0
+    recent: 0,
+    archived: 0
   });
   const [pinnedBookmarks, setPinnedBookmarks] = useState([]);
 const [searchQuery, setSearchQuery] = useState('');
@@ -28,12 +29,13 @@ const [searchQuery, setSearchQuery] = useState('');
   }, []);
   
   const loadSidebarData = async () => {
-    try {
-const [foldersData, tagsData, allBookmarks, pinnedBookmarksData] = await Promise.all([
+try {
+const [foldersData, tagsData, allBookmarks, pinnedBookmarksData, archivedBookmarks] = await Promise.all([
         folderService.getAll(),
         tagService.getAll(),
-        bookmarkService.getAll(),
-        bookmarkService.getPinned()
+bookmarkService.getAll(),
+        bookmarkService.getPinned(),
+        bookmarkService.getArchived()
       ]);
       
       setFolders(foldersData);
@@ -47,7 +49,8 @@ new Date(bookmark.dateAdded) > sevenDaysAgo
       
 setBookmarkCounts({
         total: allBookmarks.length,
-        recent: recentBookmarks.length
+        recent: recentBookmarks.length,
+        archived: archivedBookmarks.length
       });
       setPinnedBookmarks(pinnedBookmarksData);
     } catch (error) {
@@ -119,7 +122,16 @@ const handleDeleteBookmark = async (bookmarkId) => {
       console.error('Error toggling pin:', error);
     }
   };
-  
+const handleArchiveBookmark = async (bookmarkId) => {
+    try {
+      const success = await bookmarkService.toggleArchive(bookmarkId);
+      if (success) {
+        await loadSidebarData();
+      }
+    } catch (error) {
+      console.error('Error archiving bookmark:', error);
+    }
+  };
   const handleSearch = (query) => {
     setSearchQuery(query);
     
@@ -160,11 +172,12 @@ bookmarkCounts={bookmarkCounts}
             onMenuToggle={() => setIsMobileMenuOpen(true)}
           />
           
-          <main className="flex-1 overflow-y-auto">
+<main className="flex-1 overflow-y-auto">
 <Outlet context={{ 
               onEdit: handleEditBookmark, 
               onDelete: handleDeleteBookmark,
               onPin: handlePinBookmark,
+              onArchive: handleArchiveBookmark,
               onAddBookmark: handleAddBookmark,
               searchQuery,
               onSharingUpdate: loadSidebarData

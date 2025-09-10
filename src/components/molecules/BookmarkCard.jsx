@@ -6,7 +6,7 @@ import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
 
-const BookmarkCard = ({ bookmark, onEdit, onDelete, onPin, onOpen, className }) => {
+const BookmarkCard = ({ bookmark, onEdit, onDelete, onPin, onArchive, onOpen, className }) => {
   const [imageError, setImageError] = useState(false);
   const [isPinning, setIsPinning] = useState(false);
   
@@ -115,6 +115,24 @@ await onPin(bookmark.Id);
         </span>
         
 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onArchive) {
+                onArchive(bookmark.Id);
+              }
+            }}
+            className="h-8 w-8 p-0 hover:bg-gray-100"
+            title={bookmark.isArchived ? "Unarchive" : "Archive"}
+          >
+            <ApperIcon 
+              name={bookmark.isArchived ? "ArchiveRestore" : "Archive"} 
+              size={14} 
+              className="text-gray-500 hover:text-gray-700" 
+            />
+          </Button>
           <Button
             variant="ghost"
             size="sm"
