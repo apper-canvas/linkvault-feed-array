@@ -83,7 +83,7 @@ const generateDescription = async (title) => {
     
     setIsGeneratingDescription(true);
     try {
-      const response = await fetch('https://test-api.apper.io/fn/generate-description', {
+      const response = await fetch('https://test-api.apper.io/fn/e6620bc7bfc443f191fe767233b2ef49/execute', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
