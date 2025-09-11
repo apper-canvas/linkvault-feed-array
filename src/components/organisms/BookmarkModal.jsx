@@ -20,6 +20,7 @@ const [formData, setFormData] = useState({
     url: '',
     title: '',
     description: '',
+    generatedDescription: '',
     tags: [],
     folderId: ''
   });
@@ -30,7 +31,7 @@ const [formData, setFormData] = useState({
   });
   const [errors, setErrors] = useState({});
   const [isFetchingTitle, setIsFetchingTitle] = useState(false);
-  
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const isEditing = Boolean(bookmark);
   
 useEffect(() => {
@@ -77,6 +78,40 @@ useEffect(() => {
     return Object.keys(newErrors).length === 0;
   };
   
+const generateDescription = async (title) => {
+    if (!title.trim()) return;
+    
+    setIsGeneratingDescription(true);
+    try {
+      const response = await fetch('https://test-api.apper.io/fn/generate-description', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title })
+      });
+
+      const data = await response.json();
+      
+      if (data.success && data.description) {
+        setFormData(prev => ({
+          ...prev,
+          description: data.description,
+          generatedDescription: data.description
+        }));
+        toast.success('Description generated successfully');
+      } else {
+        console.error('Failed to generate description:', data.error);
+        toast.error('Could not generate description');
+      }
+    } catch (error) {
+      console.error('Error generating description:', error);
+      toast.error('Could not generate description');
+    } finally {
+      setIsGeneratingDescription(false);
+    }
+  };
+
   const fetchPageTitle = async (url) => {
     setIsFetchingTitle(true);
     try {
@@ -85,12 +120,15 @@ useEffect(() => {
       const domain = new URL(url).hostname;
       const title = `Bookmark from ${domain}`;
       
-setFormData(prev => ({
+      setFormData(prev => ({
         ...prev,
         title: title
       }));
       
       toast.success('Title fetched successfully');
+      
+      // Auto-generate description after fetching title
+      await generateDescription(title);
     } catch (error) {
       toast.error('Could not fetch page title');
     } finally {
@@ -108,7 +146,7 @@ setFormData(prev => ({
     }
   };
   
-  const handleFetchTitle = () => {
+const handleFetchTitle = () => {
     if (formData.url.trim()) {
       try {
         new URL(formData.url);
@@ -116,6 +154,24 @@ setFormData(prev => ({
       } catch {
         toast.error('Please enter a valid URL first');
       }
+    }
+  };
+
+  const handleTitleChange = (e) => {
+    const title = e.target.value;
+    setFormData(prev => ({ ...prev, title }));
+    
+    // Auto-generate description when title is manually changed and has substance
+    if (title.trim().length > 10 && title !== formData.title) {
+      generateDescription(title);
+    }
+  };
+
+  const handleGenerateDescription = () => {
+    if (formData.title.trim()) {
+      generateDescription(formData.title);
+    } else {
+      toast.error('Please enter a title first');
     }
   };
   
@@ -226,14 +282,14 @@ toast.error('Failed to create folder');
           )}
         </div>
         
-        <div>
+<div>
           <Label htmlFor="title" required>Title</Label>
           <Input
             id="title"
             type="text"
             placeholder="Enter bookmark title"
             value={formData.title}
-            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+            onChange={handleTitleChange}
             error={errors.title}
           />
           {errors.title && (
@@ -241,11 +297,33 @@ toast.error('Failed to create folder');
           )}
         </div>
         
-        <div>
-          <Label htmlFor="description">Description</Label>
+<div>
+          <div className="flex items-center justify-between mb-1">
+            <Label htmlFor="description">Description</Label>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleGenerateDescription}
+              disabled={!formData.title.trim() || isGeneratingDescription}
+              className="text-xs px-2 py-1 h-auto"
+            >
+              {isGeneratingDescription ? (
+                <>
+                  <ApperIcon name="Loader2" className="w-3 h-3 animate-spin mr-1" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <ApperIcon name="Sparkles" className="w-3 h-3 mr-1" />
+                  Generate with AI
+                </>
+              )}
+            </Button>
+          </div>
           <textarea
             id="description"
-            placeholder="Optional description or notes"
+            placeholder="Optional description or notes (AI can generate this for you)"
             value={formData.description}
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
             className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm placeholder-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-none"
