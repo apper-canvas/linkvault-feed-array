@@ -31,9 +31,19 @@ const BookmarkCard = ({ bookmark, onEdit, onDelete, onPin, onArchive, onOpen, cl
     }
   };
   
-  const handleCardClick = (e) => {
+const handleCardClick = async (e) => {
     if (e.target.closest('button')) return;
-    onOpen?.(bookmark.url);
+    
+    // Track usage analytics
+    try {
+      const { analyticsService } = await import('@/services/api/analyticsService');
+      await analyticsService.trackUsage(bookmark.Id, 'click');
+    } catch (error) {
+      console.error('Analytics tracking failed:', error);
+      // Continue with bookmark opening even if analytics fails
+    }
+    
+    onOpen?.(bookmark.url_c || bookmark.url);
   };
 
   const handlePin = async () => {

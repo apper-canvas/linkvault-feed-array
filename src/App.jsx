@@ -8,13 +8,14 @@ import Layout from "@/components/organisms/Layout";
 import Signup from "@/components/pages/Signup";
 import Callback from "@/components/pages/Callback";
 import ResetPassword from "@/components/pages/ResetPassword";
-import RecentBookmarks from "@/components/pages/RecentBookmarks";
+import RecentBookmarks from '@/components/pages/RecentBookmarks';
 import ErrorPage from "@/components/pages/ErrorPage";
 import Login from "@/components/pages/Login";
 import FoldersPage from "@/components/pages/FoldersPage";
 import AllBookmarks from "@/components/pages/AllBookmarks";
 import PromptPassword from "@/components/pages/PromptPassword";
 import SharedFolderPage from "@/components/pages/SharedFolderPage";
+import Dashboard from "@/components/pages/Dashboard";
 
 export const AuthContext = createContext(null);
 
@@ -118,11 +119,12 @@ function AppContent() {
         <Route path="/error" element={<ErrorPage />} />
         <Route path="/prompt-password/:appId/:emailAddress/:provider" element={<PromptPassword />} />
         <Route path="/reset-password/:appId/:fields" element={<ResetPassword />} />
-        <Route path="/" element={<Layout />}>
-<Route index element={<AllBookmarks />} />
+<Route path="/" element={<Layout />}>
+          <Route index element={<AllBookmarks />} />
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="recent" element={<RecentBookmarks />} />
           <Route path="archive" element={<ArchivedBookmarks />} />
-<Route path="folders" element={<FoldersPage />} />
+          <Route path="folders" element={<FoldersPage />} />
           <Route path="shared/folder/:shareId" element={<SharedFolderPage />} />
         </Route>
       </Routes>
