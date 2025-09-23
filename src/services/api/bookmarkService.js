@@ -32,19 +32,21 @@ class BookmarkService {
 
     try {
 const params = {
-        fields: [
+fields: [
           {"field": {"Name": "Name"}},
           {"field": {"Name": "url_c"}},
           {"field": {"Name": "title_c"}},
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "tags_c"}},
           {"field": {"Name": "favicon_c"}},
+          {"field": {"Name": "icon_c"}},
           {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "pinned_c"}},
           {"field": {"Name": "folder_id_c"}},
-{"field": {"Name": "archive_c"}},
-          {"field": {"Name": "generated_description_c"}}
+          {"field": {"Name": "archive_c"}},
+          {"field": {"Name": "generated_description_c"}},
+          {"field": {"Name": "CreatedBy"}}
         ],
 where: [{"FieldName": "archive_c", "Operator": "EqualTo", "Values": [false]}],
         orderBy: [{"fieldName": "date_added_c", "sorttype": "DESC"}],
@@ -63,19 +65,21 @@ where: [{"FieldName": "archive_c", "Operator": "EqualTo", "Values": [false]}],
         return [];
       }
 
-      return response.data.map(bookmark => ({
+return response.data.map(bookmark => ({
         ...bookmark,
         url: bookmark.url_c,
         title: bookmark.title_c || bookmark.Name,
         description: bookmark.description_c,
-tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+        tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
+        icon: bookmark.icon_c || '',
         generatedDescription: bookmark.generated_description_c || '',
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
-folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
+        folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
         isPinned: bookmark.pinned_c || false,
-isArchived: bookmark.archive_c || false
+        isArchived: bookmark.archive_c || false,
+        createdBy: bookmark.CreatedBy?.Id || bookmark.CreatedBy
       }));
     } catch (error) {
       console.error("Error fetching bookmarks:", error?.response?.data?.message || error);
@@ -97,14 +101,16 @@ fields: [
           {"field": {"Name": "url_c"}},
           {"field": {"Name": "title_c"}},
           {"field": {"Name": "description_c"}},
-{"field": {"Name": "tags_c"}},
+          {"field": {"Name": "tags_c"}},
           {"field": {"Name": "favicon_c"}},
+          {"field": {"Name": "icon_c"}},
           {"field": {"Name": "generated_description_c"}},
           {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "folder_id_c"}},
           {"field": {"Name": "pinned_c"}},
-{"field": {"Name": "archive_c"}}
+          {"field": {"Name": "archive_c"}},
+          {"field": {"Name": "CreatedBy"}}
         ]
       };
 
@@ -115,19 +121,21 @@ fields: [
       }
 
       const bookmark = response.data;
-      return {
+return {
         ...bookmark,
         url: bookmark.url_c,
         title: bookmark.title_c || bookmark.Name,
         description: bookmark.description_c,
-tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+        tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
+        icon: bookmark.icon_c || '',
         generatedDescription: bookmark.generated_description_c || '',
-dateAdded: bookmark.date_added_c,
+        dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
         isPinned: bookmark.pinned_c || false,
-isArchived: bookmark.archive_c || false,
-        folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c
+        isArchived: bookmark.archive_c || false,
+        folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
+        createdBy: bookmark.CreatedBy?.Id || bookmark.CreatedBy
       };
     } catch (error) {
       console.error(`Error fetching bookmark ${id}:`, error?.response?.data?.message || error);
@@ -151,12 +159,14 @@ fields: [
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "tags_c"}},
           {"field": {"Name": "favicon_c"}},
+          {"field": {"Name": "icon_c"}},
           {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "folder_id_c"}},
-{"field": {"Name": "pinned_c"}},
+          {"field": {"Name": "pinned_c"}},
           {"field": {"Name": "archive_c"}},
-          {"field": {"Name": "generated_description_c"}}
+          {"field": {"Name": "generated_description_c"}},
+          {"field": {"Name": "CreatedBy"}}
         ],
         where: [
 {"FieldName": "archive_c", "Operator": "EqualTo", "Values": [false]},
@@ -172,19 +182,21 @@ fields: [
         return [];
       }
 
-      return response.data.map(bookmark => ({
+return response.data.map(bookmark => ({
         ...bookmark,
         url: bookmark.url_c,
         title: bookmark.title_c || bookmark.Name,
-description: bookmark.description_c,
+        description: bookmark.description_c,
         generatedDescription: bookmark.generated_description_c || '',
         tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
+        icon: bookmark.icon_c || '',
         isPinned: bookmark.pinned_c || false,
-isArchived: bookmark.archive_c || false,
+        isArchived: bookmark.archive_c || false,
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
-        folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c
+        folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
+        createdBy: bookmark.CreatedBy?.Id || bookmark.CreatedBy
       }));
     } catch (error) {
       console.error("Error fetching bookmarks by tag:", error?.response?.data?.message || error);
@@ -207,13 +219,15 @@ fields: [
           {"field": {"Name": "title_c"}},
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "tags_c"}},
-{"field": {"Name": "favicon_c"}},
+          {"field": {"Name": "favicon_c"}},
+          {"field": {"Name": "icon_c"}},
           {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "generated_description_c"}},
           {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "folder_id_c"}},
-{"field": {"Name": "archive_c"}},
-          {"field": {"Name": "pinned_c"}}
+          {"field": {"Name": "archive_c"}},
+          {"field": {"Name": "pinned_c"}},
+          {"field": {"Name": "CreatedBy"}}
         ],
         where: [{"FieldName": "folder_id_c", "Operator": "ExactMatch", "Values": [parseInt(folderId)]}],
         orderBy: [{"fieldName": "date_added_c", "sorttype": "DESC"}],
@@ -227,18 +241,20 @@ fields: [
       }
 
       return response.data.map(bookmark => ({
-        ...bookmark,
+...bookmark,
         url: bookmark.url_c,
         title: bookmark.title_c || bookmark.Name,
-description: bookmark.description_c,
+        description: bookmark.description_c,
         generatedDescription: bookmark.generated_description_c || '',
         tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
         isPinned: bookmark.pinned_c || false,
-isArchived: bookmark.archive_c || false,
+        isArchived: bookmark.archive_c || false,
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
+        icon: bookmark.icon_c || '',
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
-        folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c
+        folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
+        createdBy: bookmark.CreatedBy?.Id || bookmark.CreatedBy
       }));
     } catch (error) {
       console.error("Error fetching bookmarks by folder:", error?.response?.data?.message || error);
@@ -256,19 +272,20 @@ isArchived: bookmark.archive_c || false,
     try {
       const now = new Date().toISOString();
       const params = {
-        records: [{
+records: [{
           Name: bookmarkData.title || 'Untitled Bookmark',
           url_c: bookmarkData.url,
           title_c: bookmarkData.title,
-description_c: bookmarkData.description || '',
+          description_c: bookmarkData.description || '',
           generated_description_c: bookmarkData.generatedDescription || '',
           tags_c: Array.isArray(bookmarkData.tags) ? bookmarkData.tags.join(',') : (bookmarkData.tags || ''),
           favicon_c: this.getFaviconUrl(bookmarkData.url),
+          icon_c: bookmarkData.icon || '',
           date_added_c: now,
           date_modified_c: now,
-folder_id_c: bookmarkData.folderId ? parseInt(bookmarkData.folderId) : null,
+          folder_id_c: bookmarkData.folderId ? parseInt(bookmarkData.folderId) : null,
           pinned_c: bookmarkData.isPinned || false,
-archive_c: bookmarkData.isArchived || false
+          archive_c: bookmarkData.isArchived || false
         }]
       };
 
@@ -295,18 +312,20 @@ archive_c: bookmarkData.isArchived || false
         if (successful.length > 0) {
           const created = successful[0].data;
           return {
-            ...created,
+...created,
             url: created.url_c,
             title: created.title_c || created.Name,
             description: created.description_c,
-tags: created.tags_c ? created.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+            tags: created.tags_c ? created.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
             favicon: created.favicon_c,
+            icon: created.icon_c || '',
             generatedDescription: created.generated_description_c || '',
             dateAdded: created.date_added_c,
             isPinned: created.pinned_c || false,
-isArchived: created.archive_c || false,
+            isArchived: created.archive_c || false,
             dateModified: created.date_modified_c,
-            folderId: created.folder_id_c?.Id || created.folder_id_c
+            folderId: created.folder_id_c?.Id || created.folder_id_c,
+            createdBy: created.CreatedBy?.Id || created.CreatedBy
           };
         }
       }
@@ -327,19 +346,20 @@ isArchived: created.archive_c || false,
 
     try {
       const params = {
-        records: [{
+records: [{
           Id: parseInt(id),
           Name: bookmarkData.title || 'Untitled Bookmark',
           url_c: bookmarkData.url,
           title_c: bookmarkData.title,
-description_c: bookmarkData.description || '',
+          description_c: bookmarkData.description || '',
           generated_description_c: bookmarkData.generatedDescription || '',
           tags_c: Array.isArray(bookmarkData.tags) ? bookmarkData.tags.join(',') : (bookmarkData.tags || ''),
           favicon_c: this.getFaviconUrl(bookmarkData.url),
-date_modified_c: new Date().toISOString(),
+          icon_c: bookmarkData.icon || '',
+          date_modified_c: new Date().toISOString(),
           folder_id_c: bookmarkData.folderId ? parseInt(bookmarkData.folderId) : null,
           pinned_c: bookmarkData.isPinned !== undefined ? bookmarkData.isPinned : false,
-archive_c: bookmarkData.isArchived !== undefined ? bookmarkData.isArchived : false
+          archive_c: bookmarkData.isArchived !== undefined ? bookmarkData.isArchived : false
         }]
       };
 
@@ -367,17 +387,19 @@ archive_c: bookmarkData.isArchived !== undefined ? bookmarkData.isArchived : fal
           const updated = successful[0].data;
           return {
             ...updated,
-            url: updated.url_c,
+url: updated.url_c,
             title: updated.title_c || updated.Name,
             description: updated.description_c,
-tags: updated.tags_c ? updated.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+            tags: updated.tags_c ? updated.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
             favicon: updated.favicon_c,
+            icon: updated.icon_c || '',
             generatedDescription: updated.generated_description_c || '',
-dateAdded: updated.date_added_c,
+            dateAdded: updated.date_added_c,
             dateModified: updated.date_modified_c,
             isPinned: updated.pinned_c || false,
-isArchived: updated.archive_c || false,
-            folderId: updated.folder_id_c?.Id || updated.folder_id_c
+            isArchived: updated.archive_c || false,
+            folderId: updated.folder_id_c?.Id || updated.folder_id_c,
+            createdBy: updated.CreatedBy?.Id || updated.CreatedBy
           };
         }
       }
@@ -550,19 +572,21 @@ async toggleArchive(id) {
 
     try {
       const params = {
-        fields: [
+fields: [
           {"field": {"Name": "Name"}},
           {"field": {"Name": "url_c"}},
           {"field": {"Name": "title_c"}},
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "tags_c"}},
           {"field": {"Name": "favicon_c"}},
-{"field": {"Name": "date_added_c"}},
+          {"field": {"Name": "icon_c"}},
+          {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "date_modified_c"}},
           {"field": {"Name": "generated_description_c"}},
-{"field": {"Name": "pinned_c"}},
+          {"field": {"Name": "pinned_c"}},
           {"field": {"Name": "folder_id_c"}},
-{"field": {"Name": "archive_c"}}
+          {"field": {"Name": "archive_c"}},
+          {"field": {"Name": "CreatedBy"}}
         ],
 where: [{"FieldName": "archive_c", "Operator": "EqualTo", "Values": [true]}],
         orderBy: [{"fieldName": "date_modified_c", "sorttype": "DESC"}],
@@ -583,17 +607,19 @@ where: [{"FieldName": "archive_c", "Operator": "EqualTo", "Values": [true]}],
 
       return response.data.map(bookmark => ({
         ...bookmark,
-        title: bookmark.title_c || bookmark.Name,
+title: bookmark.title_c || bookmark.Name,
         url: bookmark.url_c,
-description: bookmark.description_c,
+        description: bookmark.description_c,
         generatedDescription: bookmark.generated_description_c || '',
         tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()) : [],
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
-folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
+        folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
         isPinned: bookmark.pinned_c || false,
-isArchived: bookmark.archive_c || false,
-        favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c)
+        isArchived: bookmark.archive_c || false,
+        favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
+        icon: bookmark.icon_c || '',
+        createdBy: bookmark.CreatedBy?.Id || bookmark.CreatedBy
       }));
     } catch (error) {
       console.error("Error fetching archived bookmarks:", error?.response?.data?.message || error);
@@ -609,19 +635,21 @@ isArchived: bookmark.archive_c || false,
 
     try {
       const params = {
-        fields: [
+fields: [
           {"field": {"Name": "Name"}},
           {"field": {"Name": "url_c"}},
           {"field": {"Name": "title_c"}},
           {"field": {"Name": "description_c"}},
-{"field": {"Name": "tags_c"}},
+          {"field": {"Name": "tags_c"}},
           {"field": {"Name": "favicon_c"}},
+          {"field": {"Name": "icon_c"}},
           {"field": {"Name": "generated_description_c"}},
           {"field": {"Name": "date_added_c"}},
           {"field": {"Name": "date_modified_c"}},
-{"field": {"Name": "folder_id_c"}},
+          {"field": {"Name": "folder_id_c"}},
           {"field": {"Name": "pinned_c"}},
-{"field": {"Name": "archive_c"}}
+          {"field": {"Name": "archive_c"}},
+          {"field": {"Name": "CreatedBy"}}
         ],
         where: [
           {"FieldName": "pinned_c", "Operator": "EqualTo", "Values": [true]},
@@ -639,17 +667,19 @@ isArchived: bookmark.archive_c || false,
       
       return response.data.map(bookmark => ({
         ...bookmark,
-        url: bookmark.url_c,
+url: bookmark.url_c,
         title: bookmark.title_c || bookmark.Name,
-description: bookmark.description_c,
+        description: bookmark.description_c,
         generatedDescription: bookmark.generated_description_c || '',
         tags: bookmark.tags_c ? bookmark.tags_c.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
         favicon: bookmark.favicon_c || this.getFaviconUrl(bookmark.url_c),
+        icon: bookmark.icon_c || '',
         dateAdded: bookmark.date_added_c,
         dateModified: bookmark.date_modified_c,
-folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
-isArchived: bookmark.archive_c || false,
-        isPinned: true
+        folderId: bookmark.folder_id_c?.Id || bookmark.folder_id_c,
+        isArchived: bookmark.archive_c || false,
+        isPinned: true,
+        createdBy: bookmark.CreatedBy?.Id || bookmark.CreatedBy
       }));
     } catch (error) {
       console.error('Error fetching pinned bookmarks:', error?.response?.data?.message || error);

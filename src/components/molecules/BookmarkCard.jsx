@@ -1,12 +1,15 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import ApperIcon from "@/components/ApperIcon";
-import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
 import { cn } from "@/utils/cn";
 
 const BookmarkCard = ({ bookmark, onEdit, onDelete, onPin, onArchive, onOpen, className }) => {
+  const { user } = useSelector(state => state.user);
+  const isOwner = user && bookmark.createdBy && (user.Id === bookmark.createdBy || user.id === bookmark.createdBy);
   const [imageError, setImageError] = useState(false);
   const [isPinning, setIsPinning] = useState(false);
   
@@ -71,8 +74,10 @@ await onPin(bookmark.Id);
       onClick={handleCardClick}
     >
       <div className="flex items-start gap-3 mb-3">
-        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
-{!imageError && getFaviconUrl(bookmark.url) ? (
+<div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
+          {bookmark.icon ? (
+            <ApperIcon name={bookmark.icon} className="w-5 h-5 text-gray-600" />
+          ) : !imageError && getFaviconUrl(bookmark.url) ? (
             <img
               src={getFaviconUrl(bookmark.url)}
               alt=""
@@ -169,20 +174,22 @@ await onPin(bookmark.Id);
             }}
             className="p-2 h-8 w-8"
           >
-            <ApperIcon name="Edit2" className="w-4 h-4" />
+<ApperIcon name="Edit2" className="w-4 h-4" />
           </Button>
           
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(bookmark.Id);
-            }}
-            className="p-2 h-8 w-8 text-error hover:text-error hover:bg-error/10"
-          >
-            <ApperIcon name="Trash2" className="w-4 h-4" />
-          </Button>
+          {isOwner && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(bookmark.Id);
+              }}
+              className="p-2 h-8 w-8 text-error hover:text-error hover:bg-error/10"
+            >
+              <ApperIcon name="Trash2" className="w-4 h-4" />
+            </Button>
+          )}
         </div>
       </div>
     </motion.div>
