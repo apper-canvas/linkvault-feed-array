@@ -18,7 +18,7 @@ apper.serve(async (request) => {
     
     if (!title) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Title is mandatory' }),
+        JSON.stringify({ success: false, error: 'Title is needed' }),
         { 
           status: 400,
           headers: { 'Content-Type': 'application/json' }
