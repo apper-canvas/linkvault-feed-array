@@ -19,7 +19,7 @@ export default async function handler(request) {
       return new Response('ok', {
 headers: {
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': '*',
+          'Access-Control-Allow-Headers': '1',
         }})
     }
     // Parse request body
