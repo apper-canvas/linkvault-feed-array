@@ -1,12 +1,21 @@
 // Import required globals for custom action environment
-const apper = globalThis.apper;
+const apper = globalThis.apper || {
+  serve: (handler) => {
+    globalThis.handler = handler;
+  },
+  getSecret: async (key) => {
+    return globalThis.Deno?.env?.get?.(key) || process?.env?.[key];
+  }
+};
+
 const Response = globalThis.Response || function(body, init) {
   return new globalThis.Response(body, init);
 };
 
-apper.serve(async (request) => {
+// Export handler function for edge function environment
+export default async function handler(request) {
   try {
-    if (req.method === 'OPTIONS') {
+    if (request.method === 'OPTIONS') {
       return new Response('ok', {
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -107,6 +116,11 @@ apper.serve(async (request) => {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
       }
-    );
+);
   }
-});
+}
+
+// Also support apper.serve pattern if available
+if (apper && typeof apper.serve === 'function') {
+  apper.serve(handler);
+}
