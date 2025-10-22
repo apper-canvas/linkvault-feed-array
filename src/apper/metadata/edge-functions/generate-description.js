@@ -3,8 +3,8 @@ const apper = globalThis.apper || {
   serve: (handler) => {
     globalThis.handler = handler;
   },
-  getSecret: async (key) => {
-    return globalThis.Deno?.env?.get?.(key) || process?.env?.[key];
+getSecret: async (key) => {
+    return globalThis.Deno?.env?.get?.(key);
   }
 };
 
@@ -17,10 +17,10 @@ export default async function handler(request) {
   try {
     if (request.method === 'OPTIONS') {
       return new Response('ok', {
-        headers: {
+headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': '*',
-        } })
+        }})
     }
     // Parse request body
     const { title } = await request.json();
